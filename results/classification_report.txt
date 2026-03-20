@@ -1,0 +1,11 @@
+XGBoost (Tuned) — Classification Report
+==================================================
+
+              precision    recall  f1-score   support
+
+ Not Potable       0.87      0.83      0.85       600
+     Potable       0.76      0.82      0.79       400
+
+    accuracy                           0.82      1000
+   macro avg       0.82      0.82      0.82      1000
+weighted avg       0.83      0.82      0.83      1000

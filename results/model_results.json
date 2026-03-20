@@ -1,0 +1,40 @@
+{
+  "Logistic Regression": {
+    "accuracy": 0.759,
+    "f1_score": 0.6961,
+    "roc_auc": 0.8383,
+    "cv_f1_mean": 0.693,
+    "cv_f1_std": 0.0114
+  },
+  "Random Forest": {
+    "accuracy": 0.814,
+    "f1_score": 0.7634,
+    "roc_auc": 0.8893,
+    "cv_f1_mean": 0.7874,
+    "cv_f1_std": 0.0221
+  },
+  "XGBoost": {
+    "accuracy": 0.807,
+    "f1_score": 0.7643,
+    "roc_auc": 0.8958,
+    "cv_f1_mean": 0.7958,
+    "cv_f1_std": 0.0187
+  },
+  "SVM (RBF)": {
+    "accuracy": 0.826,
+    "f1_score": 0.7899,
+    "roc_auc": 0.9089,
+    "cv_f1_mean": 0.8194,
+    "cv_f1_std": 0.0153
+  },
+  "XGBoost (Tuned)": {
+    "accuracy": 0.825,
+    "f1_score": 0.7889,
+    "roc_auc": 0.8984,
+    "best_params": {
+      "clf__learning_rate": 0.1,
+      "clf__max_depth": 4,
+      "clf__n_estimators": 100
+    }
+  }
+}
