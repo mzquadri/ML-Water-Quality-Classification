@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 540" width="980" height="540"
+     font-family="Segoe UI, DejaVu Sans, Helvetica, Arial, sans-serif">
+  <rect width="980" height="540" fill="#FFFFFF"/>
+
+  <text x="40" y="34" font-size="13" font-weight="600" fill="#4B5563">How a row is made</text>
+  <text x="560" y="34" font-size="13" font-weight="600" fill="#4B5563">How a row is classified</text>
+  <line x1="510" y1="46" x2="510" y2="470" stroke="#E5E7EB" stroke-width="1.4" stroke-dasharray="5 4"/>
+
+  <!-- Generation, left column -->
+  <rect x="40" y="52" width="420" height="60" rx="8" fill="#FFFBEB" stroke="#D97706" stroke-width="1.6"/>
+  <text x="250" y="76" text-anchor="middle" font-size="14" font-weight="600" fill="#111827">the label is drawn first</text>
+  <text x="250" y="96" text-anchor="middle" font-size="11.5" fill="#4B5563">potability ~ Bernoulli(0.40), a coin flip with no input</text>
+
+  <path d="M250 112 L250 138" stroke="#9CA3AF" stroke-width="1.6" fill="none"/>
+  <polygon points="250,144 245,134 255,134" fill="#9CA3AF"/>
+
+  <rect x="40" y="146" width="420" height="72" rx="8" fill="#F8FAFC" stroke="#64748B" stroke-width="1.5"/>
+  <text x="250" y="170" text-anchor="middle" font-size="14" font-weight="600" fill="#111827">nine features are drawn from it</text>
+  <text x="250" y="190" text-anchor="middle" font-size="11.5" fill="#4B5563">each from one of two normals, chosen by the label,</text>
+  <text x="250" y="207" text-anchor="middle" font-size="11.5" fill="#4B5563">drawn independently and then clipped to a plausible range</text>
+
+  <path d="M250 218 L250 244" stroke="#9CA3AF" stroke-width="1.6" fill="none"/>
+  <polygon points="250,250 245,240 255,240" fill="#9CA3AF"/>
+
+  <rect x="40" y="252" width="420" height="60" rx="8" fill="#F8FAFC" stroke="#64748B" stroke-width="1.5"/>
+  <text x="250" y="276" text-anchor="middle" font-size="13" font-weight="600" fill="#111827">7 percent of three columns is blanked</text>
+  <text x="250" y="296" text-anchor="middle" font-size="11.5" fill="#4B5563">ph, sulfate, trihalomethanes, at random and after the fact</text>
+
+  <rect x="40" y="336" width="420" height="86" rx="8" fill="#ECFDF5" stroke="#059669" stroke-width="1.6"/>
+  <text x="250" y="360" text-anchor="middle" font-size="13" font-weight="600" fill="#111827">because this is written down, the ceiling is too</text>
+  <text x="250" y="380" text-anchor="middle" font-size="11.5" fill="#4B5563">the features are independent given the label, so the best</text>
+  <text x="250" y="397" text-anchor="middle" font-size="11.5" fill="#4B5563">possible classifier is naive Bayes carrying these parameters</text>
+  <text x="250" y="414" text-anchor="middle" font-size="11.5" fill="#4B5563">and no model on this data can beat it</text>
+
+  <!-- Classification, right column -->
+  <rect x="560" y="52" width="380" height="52" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.4"/>
+  <text x="750" y="73" text-anchor="middle" font-size="13" font-weight="600" fill="#111827">5,000 rows, nine columns</text>
+  <text x="750" y="92" text-anchor="middle" font-size="11.5" fill="#4B5563">stratified 80/20 split, seed 42</text>
+
+  <path d="M750 104 L750 128" stroke="#9CA3AF" stroke-width="1.6" fill="none"/>
+  <polygon points="750,134 745,124 755,124" fill="#9CA3AF"/>
+
+  <rect x="560" y="136" width="380" height="112" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.6"/>
+  <text x="750" y="158" text-anchor="middle" font-size="13" font-weight="600" fill="#111827">one scikit-learn Pipeline per model</text>
+  <text x="750" y="180" text-anchor="middle" font-size="11.5" fill="#4B5563">SimpleImputer(median)</text>
+  <text x="750" y="199" text-anchor="middle" font-size="11.5" fill="#4B5563">StandardScaler, for the linear and kernel models</text>
+  <text x="750" y="218" text-anchor="middle" font-size="11.5" fill="#4B5563">classifier</text>
+  <text x="750" y="238" text-anchor="middle" font-size="11" fill="#059669">both fitted inside the fold, never on data they are scored on</text>
+
+  <path d="M750 248 L750 272" stroke="#9CA3AF" stroke-width="1.6" fill="none"/>
+  <polygon points="750,278 745,268 755,268" fill="#9CA3AF"/>
+
+  <rect x="560" y="280" width="380" height="60" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.4"/>
+  <text x="750" y="302" text-anchor="middle" font-size="13" font-weight="600" fill="#111827">5-fold cross-validation on the training split</text>
+  <text x="750" y="322" text-anchor="middle" font-size="11.5" fill="#4B5563">selects the model; the test split selects nothing</text>
+
+  <path d="M750 340 L750 364" stroke="#9CA3AF" stroke-width="1.6" fill="none"/>
+  <polygon points="750,370 745,360 755,360" fill="#9CA3AF"/>
+
+  <rect x="560" y="372" width="380" height="50" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.6"/>
+  <text x="750" y="394" text-anchor="middle" font-size="13" font-weight="600" fill="#111827">predicted class, scored once</text>
+  <text x="750" y="412" text-anchor="middle" font-size="11.5" fill="#4B5563">accuracy, balanced accuracy, F1, ROC-AUC, PR-AUC</text>
+
+  <text x="490" y="466" text-anchor="middle" font-size="11.5" fill="#9CA3AF">The label was never a property of the water. It was drawn before any measurement existed, and the features were drawn to match it.</text>
+  <text x="490" y="490" text-anchor="middle" font-size="11.5" fill="#9CA3AF">Nothing measured on this data supports a statement about real drinking water.</text>
+</svg>
