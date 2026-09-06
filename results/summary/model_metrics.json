@@ -1,0 +1,71 @@
+{
+  "selected": "SVM (RBF)",
+  "selection_criterion": "mean F1 over 5-fold stratified cross-validation on the training split",
+  "floor_accuracy": 0.6,
+  "ceiling_accuracy": 0.828,
+  "models": {
+    "majority_class": {
+      "accuracy": 0.6,
+      "balanced_accuracy": 0.5,
+      "f1": 0.0,
+      "roc_auc": null,
+      "pr_auc": null,
+      "cv_f1_mean": 0.0,
+      "share_of_available_signal": 0.0
+    },
+    "Logistic Regression": {
+      "accuracy": 0.759,
+      "balanced_accuracy": 0.7475,
+      "f1": 0.6960907944514502,
+      "roc_auc": 0.8383,
+      "pr_auc": 0.74962948065004,
+      "cv_f1_mean": 0.69146,
+      "share_of_available_signal": 0.6974
+    },
+    "Random Forest": {
+      "accuracy": 0.814,
+      "balanced_accuracy": 0.8033333333333333,
+      "f1": 0.7633587786259542,
+      "roc_auc": 0.8892562500000001,
+      "pr_auc": 0.8157108012893133,
+      "cv_f1_mean": 0.78718,
+      "share_of_available_signal": 0.9386
+    },
+    "XGBoost": {
+      "accuracy": 0.807,
+      "balanced_accuracy": 0.8029166666666667,
+      "f1": 0.7643467643467643,
+      "roc_auc": 0.8957666666666666,
+      "pr_auc": 0.835949919889457,
+      "cv_f1_mean": 0.7838,
+      "share_of_available_signal": 0.9079
+    },
+    "SVM (RBF)": {
+      "accuracy": 0.826,
+      "balanced_accuracy": 0.8245833333333333,
+      "f1": 0.7898550724637681,
+      "roc_auc": 0.9089125,
+      "pr_auc": 0.8479665709873415,
+      "cv_f1_mean": 0.81711,
+      "share_of_available_signal": 0.9912
+    },
+    "XGBoost (Tuned)": {
+      "accuracy": 0.825,
+      "balanced_accuracy": 0.82375,
+      "f1": 0.7889022919179735,
+      "roc_auc": 0.8983625000000001,
+      "pr_auc": 0.8397946784346491,
+      "cv_f1_mean": 0.81017,
+      "share_of_available_signal": 0.9868
+    },
+    "bayes_optimal": {
+      "accuracy": 0.828,
+      "balanced_accuracy": 0.8304166666666667,
+      "f1": 0.7966903073286052,
+      "roc_auc": 0.9154375,
+      "pr_auc": 0.8634305515573902,
+      "cv_f1_mean": null,
+      "share_of_available_signal": 1.0
+    }
+  }
+}

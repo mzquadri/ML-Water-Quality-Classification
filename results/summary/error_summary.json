@@ -1,0 +1,23 @@
+{
+  "test_rows": 1000,
+  "errors": 174,
+  "false_negatives": 73,
+  "false_positives": 101,
+  "errors_the_optimal_rule_also_makes": 148,
+  "errors_the_optimal_rule_avoids": 26,
+  "share_of_errors_that_are_irreducible": 0.8506,
+  "errors_in_the_ambiguous_band": 66,
+  "ambiguous_band": [
+    0.35,
+    0.65
+  ],
+  "rows_in_the_ambiguous_band": 145,
+  "error_rate_inside_the_band": 0.4552,
+  "error_rate_outside_the_band": 0.1263,
+  "model_confidence": {
+    "mean_on_correct": 0.3756,
+    "mean_on_wrong": 0.2244,
+    "note": "distance from 0.5, so larger means more confident"
+  },
+  "model": "SVM (RBF)"
+}

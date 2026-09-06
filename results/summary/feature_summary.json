@@ -1,0 +1,50 @@
+{
+  "features": [
+    {
+      "name": "ph",
+      "missing": 355,
+      "missing_share": 0.071
+    },
+    {
+      "name": "hardness",
+      "missing": 0,
+      "missing_share": 0.0
+    },
+    {
+      "name": "solids",
+      "missing": 0,
+      "missing_share": 0.0
+    },
+    {
+      "name": "chloramines",
+      "missing": 0,
+      "missing_share": 0.0
+    },
+    {
+      "name": "sulfate",
+      "missing": 372,
+      "missing_share": 0.0744
+    },
+    {
+      "name": "conductivity",
+      "missing": 0,
+      "missing_share": 0.0
+    },
+    {
+      "name": "organic_carbon",
+      "missing": 0,
+      "missing_share": 0.0
+    },
+    {
+      "name": "trihalomethanes",
+      "missing": 350,
+      "missing_share": 0.07
+    },
+    {
+      "name": "turbidity",
+      "missing": 0,
+      "missing_share": 0.0
+    }
+  ],
+  "note": "all numeric, all drawn independently given the label"
+}
