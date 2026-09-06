@@ -11,37 +11,39 @@ Pipeline:
 7. Professional result visualization
 """
 
-import os
 import json
+import os
 import warnings
+
+import matplotlib
 import numpy as np
 import pandas as pd
-import matplotlib
 
 matplotlib.use("Agg")
+import joblib
 import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
-from sklearn.preprocessing import StandardScaler
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
-from xgboost import XGBClassifier
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
+    accuracy_score,
     classification_report,
     confusion_matrix,
+    f1_score,
+    precision_recall_curve,
     roc_auc_score,
     roc_curve,
-    precision_recall_curve,
-    accuracy_score,
-    f1_score,
 )
-import joblib
+from sklearn.model_selection import GridSearchCV, cross_val_score, train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from xgboost import XGBClassifier
 
 warnings.filterwarnings("ignore")
-sns.set_theme(style="whitegrid", font_scale=1.1)
+plt.rcParams.update({"axes.grid": True, "grid.alpha": 0.3,
+                     "figure.facecolor": "white",
+                     "axes.facecolor": "white", "font.size": 11})
 
 FEATURE_COLS = [
     "ph",
@@ -111,18 +113,21 @@ def run_pipeline(csv_path: str, output_dir: str = "../results"):
 
     # 2b. Correlation heatmap
     fig, ax = plt.subplots(figsize=(10, 8))
-    corr = df[FEATURE_COLS + [TARGET]].corr()
+    corr = df[[*FEATURE_COLS, TARGET]].corr()
     mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
-    sns.heatmap(
-        corr,
-        mask=mask,
-        annot=True,
-        fmt=".2f",
-        cmap="coolwarm",
-        center=0,
-        square=True,
-        ax=ax,
-    )
+    # Drawn with matplotlib. seaborn was imported at module scope for these two
+    # heatmaps alone, so the file could not be imported without it installed.
+    shown = np.where(mask, np.nan, corr.to_numpy())
+    image = ax.imshow(shown, cmap="coolwarm", vmin=-1, vmax=1)
+    fig.colorbar(image, ax=ax, shrink=0.82)
+    labels = list(corr.columns)
+    ax.set_xticks(range(len(labels)), labels, rotation=45, ha="right")
+    ax.set_yticks(range(len(labels)), labels)
+    for row in range(len(labels)):
+        for column in range(len(labels)):
+            if not mask[row, column]:
+                ax.text(column, row, f"{corr.iloc[row, column]:.2f}",
+                        ha="center", va="center", fontsize=8)
     ax.set_title("Feature Correlation Matrix")
     fig.tight_layout()
     fig.savefig(os.path.join(figures_dir, "02_correlation_matrix.png"), dpi=150)
@@ -220,7 +225,7 @@ def run_pipeline(csv_path: str, output_dir: str = "../results"):
         print(f"  Test Accuracy: {acc:.4f}, F1: {f1:.4f}, AUC: {auc:.4f}")
 
     # ============================================================
-    # 6. HYPERPARAMETER TUNING (Best model — XGBoost)
+    # 6. HYPERPARAMETER TUNING (XGBoost only)
     # ============================================================
     print("\nHyperparameter tuning for XGBoost...")
     param_grid = {
@@ -279,7 +284,7 @@ def run_pipeline(csv_path: str, output_dir: str = "../results"):
             label=metric.replace("_", " ").title(),
             color=colors[i],
         )
-        for bar, val in zip(bars, values):
+        for bar, val in zip(bars, values, strict=True):
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
                 bar.get_height() + 0.005,
@@ -292,7 +297,7 @@ def run_pipeline(csv_path: str, output_dir: str = "../results"):
     ax.set_xticklabels(model_names, rotation=15, ha="right")
     ax.set_ylim(0.4, 1.0)
     ax.set_ylabel("Score")
-    ax.set_title("Model Comparison — Classification Metrics")
+    ax.set_title("Model Comparison, classification metrics")
     ax.legend()
     fig.tight_layout()
     fig.savefig(os.path.join(figures_dir, "03_model_comparison.png"), dpi=150)
@@ -315,7 +320,7 @@ def run_pipeline(csv_path: str, output_dir: str = "../results"):
     ax.plot([0, 1], [0, 1], "k--", linewidth=1, alpha=0.5, label="Random")
     ax.set_xlabel("False Positive Rate")
     ax.set_ylabel("True Positive Rate")
-    ax.set_title("ROC Curves — All Models")
+    ax.set_title("ROC Curves, all models")
     ax.legend(loc="lower right")
     ax.set_aspect("equal")
     fig.tight_layout()
@@ -328,15 +333,16 @@ def run_pipeline(csv_path: str, output_dir: str = "../results"):
     for idx, name in enumerate(["Random Forest", "XGBoost (Tuned)", "SVM (RBF)"]):
         ax = axes[idx]
         cm = confusion_matrix(y_test, all_predictions[name]["y_pred"])
-        sns.heatmap(
-            cm,
-            annot=True,
-            fmt="d",
-            cmap="Blues",
-            ax=ax,
-            xticklabels=["Not Potable", "Potable"],
-            yticklabels=["Not Potable", "Potable"],
-        )
+        names = ["Not Potable", "Potable"]
+        ax.imshow(cm, cmap="Blues")
+        ax.set_xticks(range(len(names)), names)
+        ax.set_yticks(range(len(names)), names)
+        midpoint = cm.max() / 2.0
+        for row in range(cm.shape[0]):
+            for column in range(cm.shape[1]):
+                ax.text(column, row, f"{cm[row, column]:d}", ha="center",
+                        va="center",
+                        color="white" if cm[row, column] > midpoint else "black")
         ax.set_title(name, fontweight="bold")
         ax.set_xlabel("Predicted")
         ax.set_ylabel("Actual")
@@ -405,7 +411,7 @@ def run_pipeline(csv_path: str, output_dir: str = "../results"):
         y_test, y_pred_tuned, target_names=["Not Potable", "Potable"]
     )
     with open(os.path.join(output_dir, "classification_report.txt"), "w") as f:
-        f.write("XGBoost (Tuned) — Classification Report\n")
+        f.write("XGBoost (Tuned) classification report\n")
         f.write("=" * 50 + "\n\n")
         f.write(report)
 

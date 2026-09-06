@@ -1,15 +1,25 @@
-"""
-Generate synthetic water quality dataset for classification.
+"""Generate a synthetic classification dataset with water-flavoured column names.
 
-Features based on WHO water quality parameters:
-- pH, Hardness, Solids (TDS), Chloramines, Sulfate
-- Conductivity, Organic Carbon, Trihalomethanes, Turbidity
-- Target: Potability (1 = safe to drink, 0 = not safe)
+This is not water quality data and the label is not a safety judgement. The label
+is drawn first, as a coin flip, and the nine features are then drawn from one of
+two normal distributions selected by it. Nothing is measured and no standard is
+applied.
+
+The column names and the units in the comments below borrow the vocabulary of
+water chemistry so the dataset reads as a plausible tabular problem. They do not
+describe the values produced. Total dissolved solids are drawn around 18,000 to
+22,000 in both classes, against a WHO drinking-water guideline of 1,000, and
+sulfate around 320 to 340 against a guideline of 250. The numbers are not near
+any real threshold and no threshold is used to assign the label.
+
+Because the generating process is fully specified here, the best accuracy any
+classifier could reach on this data is computable. src/ceiling.py does that.
 """
+
+import os
 
 import numpy as np
 import pandas as pd
-import os
 
 
 def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
@@ -17,10 +27,11 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     rng = np.random.RandomState(seed)
 
     n = n_samples
-    # Imbalanced: ~40% potable, ~60% not potable
+    # The label. Drawn from nothing: no feature exists yet, so this is not a
+    # rule over the data and cannot be recovered exactly from it.
     potability = rng.binomial(1, 0.40, n)
 
-    # pH (6.5-8.5 is WHO standard)
+    # A pH-like column. Both classes overlap heavily.
     ph = np.where(
         potability == 1,
         rng.normal(7.2, 0.6, n),
@@ -28,7 +39,7 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     )
     ph = np.clip(ph, 2, 14)
 
-    # Hardness (mg/L) — potable tends to be moderate
+    # A hardness-like column, nominally mg/L.
     hardness = np.where(
         potability == 1,
         rng.normal(180, 40, n),
@@ -36,7 +47,8 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     )
     hardness = np.clip(hardness, 50, 400)
 
-    # Total Dissolved Solids (mg/L) — <500 is WHO standard
+    # A dissolved-solids-like column. The values are far above any
+    # drinking-water guideline, in both classes alike.
     solids = np.where(
         potability == 1,
         rng.normal(18000, 5000, n),
@@ -44,7 +56,7 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     )
     solids = np.clip(solids, 300, 60000)
 
-    # Chloramines (ppm) — 0-4 is safe
+    # A chloramine-like column, nominally ppm.
     chloramines = np.where(
         potability == 1,
         rng.normal(7.0, 1.2, n),
@@ -52,7 +64,7 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     )
     chloramines = np.clip(chloramines, 1, 13)
 
-    # Sulfate (mg/L) — <250 is WHO
+    # A sulfate-like column, nominally mg/L.
     sulfate = np.where(
         potability == 1,
         rng.normal(320, 40, n),
@@ -60,7 +72,7 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     )
     sulfate = np.clip(sulfate, 100, 500)
 
-    # Conductivity (μS/cm)
+    # A conductivity-like column, nominally uS/cm.
     conductivity = np.where(
         potability == 1,
         rng.normal(400, 70, n),
@@ -68,7 +80,7 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     )
     conductivity = np.clip(conductivity, 180, 800)
 
-    # Organic Carbon (mg/L)
+    # An organic-carbon-like column, nominally mg/L.
     organic_carbon = np.where(
         potability == 1,
         rng.normal(13, 3, n),
@@ -76,7 +88,7 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     )
     organic_carbon = np.clip(organic_carbon, 2, 30)
 
-    # Trihalomethanes (μg/L) — <80 is EPA standard
+    # A trihalomethane-like column, nominally ug/L.
     trihalomethanes = np.where(
         potability == 1,
         rng.normal(60, 15, n),
@@ -84,7 +96,7 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     )
     trihalomethanes = np.clip(trihalomethanes, 5, 130)
 
-    # Turbidity (NTU) — <5 is WHO
+    # A turbidity-like column, nominally NTU.
     turbidity = np.where(
         potability == 1,
         rng.normal(3.5, 0.8, n),
@@ -92,7 +104,8 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
     )
     turbidity = np.clip(turbidity, 1, 7)
 
-    # Add some missing values (realistic — 5-10% per feature)
+    # Missing values are injected after the draw, so they are missing
+    # completely at random and carry no information about the label.
     df = pd.DataFrame(
         {
             "ph": ph,
@@ -108,7 +121,7 @@ def generate_water_data(n_samples: int = 5000, seed: int = 42) -> pd.DataFrame:
         }
     )
 
-    # Introduce 5-8% missing values in some columns
+    # Seven percent of three columns, chosen at random.
     for col in ["ph", "sulfate", "trihalomethanes"]:
         mask = rng.random(n) < 0.07
         df.loc[mask, col] = np.nan
