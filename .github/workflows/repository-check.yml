@@ -39,3 +39,14 @@ jobs:
 
       - name: The figures still render
         run: python scripts/figures/generate_figures.py
+
+      # scripts/export_summaries.py writes the four files under results/summary and was
+      # run by nothing: not the README, not this workflow. They are committed, so a
+      # change to the exporter or to benchmark.json could leave them stale with nothing
+      # to say so. Regenerating and diffing takes under a second.
+      - name: The exported summaries are still the committed ones
+        run: |
+          python scripts/export_summaries.py
+          git diff --exit-code -- results/summary/ || {
+            echo "results/summary/ is stale; rerun scripts/export_summaries.py and commit"
+            exit 1; }
