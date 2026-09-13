@@ -1,4 +1,4 @@
-XGBoost (Tuned) — Classification Report
+XGBoost (Tuned) classification report
 ==================================================
 
               precision    recall  f1-score   support

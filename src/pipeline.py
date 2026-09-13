@@ -391,7 +391,14 @@ def run_pipeline(csv_path: str, output_dir: str = "../results"):
     # ============================================================
     # 8. SAVE RESULTS
     # ============================================================
-    with open(os.path.join(output_dir, "model_results.json"), "w") as f:
+    # encoding is explicit: without it Python writes in the platform default, which is
+    # cp1252 on Windows and UTF-8 on Linux, so the same run produces different bytes on
+    # different machines. The committed classification report still carried a stray 0x97
+    # from that, which made the file invalid UTF-8. newline is pinned for the same
+    # reason: without it Windows writes CRLF where Linux writes LF, so a committed
+    # artifact looks modified purely because of where it was regenerated.
+    with open(os.path.join(output_dir, "model_results.json"), "w",
+              encoding="utf-8", newline="\n") as f:
         # Convert numpy types for JSON serialization
         serializable = {}
         for k, v in results.items():
@@ -410,7 +417,8 @@ def run_pipeline(csv_path: str, output_dir: str = "../results"):
     report = classification_report(
         y_test, y_pred_tuned, target_names=["Not Potable", "Potable"]
     )
-    with open(os.path.join(output_dir, "classification_report.txt"), "w") as f:
+    with open(os.path.join(output_dir, "classification_report.txt"), "w",
+              encoding="utf-8", newline="\n") as f:
         f.write("XGBoost (Tuned) classification report\n")
         f.write("=" * 50 + "\n\n")
         f.write(report)
