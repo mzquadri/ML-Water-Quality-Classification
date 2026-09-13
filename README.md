@@ -196,6 +196,13 @@ a lower bound on the ceiling rather than the ceiling itself.
 The generator clips each feature, so the true density is not normal at the
 bounds, and at most 0.30 percent of values sit on a bound, in `hardness`.
 
+There is no accelerator path here and adding one would not help. XGBoost builds
+for CPU and CUDA and has no Intel XPU backend; scikit-learn's SVM and random
+forest are CPU-only unless a separate Intel extension is installed, and none is a
+dependency. The dataset is the size given in the table above and fits in a few
+hundred kilobytes, so the whole benchmark runs in well under a minute on one
+core. Both reasons stand on their own.
+
 ## Provenance
 
 The original run's five metrics are committed in `results/model_results.json` and
