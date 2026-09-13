@@ -218,6 +218,12 @@ load, so shipping one asks a reader to trust a binary in order to inspect a
 repository. Running `src/pipeline.py` still writes one locally and it is now
 ignored by git; `scripts/check_repository.py` fails if it is ever tracked again.
 
+Removing it from the working tree did not remove it from history. The blob is
+still reachable in commit `6d29913` and earlier, so a clone fetches it and
+`git cat-file` will hand it back. Rewriting published history to excise a file
+that is the author's own and was never secret is a worse trade than saying so
+here. Do not unpickle it; nothing in this repository does.
+
 ## Licence
 
 MIT. See [LICENSE](LICENSE).
